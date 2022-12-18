@@ -1,30 +1,45 @@
-drop database sqyl_db if exists;
-create database sqyl_db;
+set names utf8;
+drop database if exists sqyl_db;
+create database sqyl_db default charset = utf8;
 use sqyl_db;
--- 医生信息
-create table if not exists doctor(
-  id int primary key,
-  name varchar(50) not null comment "姓名",
-  grade varchar(10) not null  comment "等级（医师/护士）";
-  good_at varchar(50) not null  comment "擅长领域",
-  avatar varchar(200)  comment "医生头像",
-  hospital_id int comment "绑定医院id",
-);
 
 -- 医院信息
+drop table if exists hospital;
 create table if not exists hospital(
-  id int primary key,
+  hid int primary key  comment "医院id",
   title varchar(50) not null comment "医院名",
-  detail varchar(1000) not null  comment "医院介绍";
+  logo varchar(200) not null  comment "医院logo",
   grade varchar(50) not null  comment "医院等级",
   type varchar(200)  comment "医院类型",
-  telephone varchar(20) comment "预约挂号电话",
-  cityid int comment "医院所在城市id",
-  province int comment "医院所在省份id"
+  -- telephone varchar(100) comment "预约挂号电话",
+  address varchar(200) comment "医院地址"
+  -- cityid int comment "医院所在城市id",
+  -- province int comment "医院所在省份id"
+);
+
+-- 科室信息
+drop table if exists depa;
+create table if not exists depa(
+  did int primary key  comment "科室id/编号",
+  title varchar(50) not null comment "科室名",
+  hid int not null  comment "所属医院"
+);
+
+-- 医生信息
+drop table if exists doctor;
+create table doctor(
+  id int primary key,
+  name varchar(50) not null comment "姓名",
+  grade varchar(10) not null  comment "等级（医师/护士..）",
+  good_at varchar(50) not null comment "擅长领域",
+  avatar varchar(200) comment "医生头像",
+  -- gender boolean not null comment "医生性别",
+  hospital_id int comment "绑定医院id"
 );
 
 -- 药品信息
-create table if not exists drugs(
+drop table if exists drugs;
+create table drugs(
   id int primary key,
   signid varchar(20) comment "注册号",
   name varchar(50) comment "药品名称",
@@ -34,23 +49,81 @@ create table if not exists drugs(
   code varchar(15) comment "药品编码"
 );
 
+
+
 -- 用户信息
-create table if not exists user(
-  uid primary key,
-  name varchar(20) not null,
+drop table if exists user;
+create table user(
+  uid int primary key,
+  name varchar(20) not null comment "姓名",
   phone varchar(13),
-  married boolean not null comment "是否已婚"
+  -- married boolean not null comment "是否已婚",
   gender boolean not null comment "性别",
-  age tinyint not null comment "年龄",
-  shenfenzheng varchar(18) comment "居民身份证"
+  -- age tinyint not null comment "年龄",
+  birthday date not null  comment "生日",
+  shenfenzheng varchar(18) not null comment "居民身份证",
+  address varchar(50) comment "用户地址", 
+  create_time datetime  not null comment "用户创建时间",
+  update_time datetime  not null comment "资料更新时间"
 );
 
--- 健康数据
-create table if not exists health(
-  uid primary key comment "绑定的用户id",
+-- 用户健康数据
+drop table if exists health;
+create table  health(
+  uid int primary key comment "绑定的用户id",
   height int comment "身高",
   weight int comment "体重",
-  blood_ressure int comment "血压",
-  blood_sugar int comment "血糖"
+  blood_ressure varchar(5) comment "血压",
+  blood_sugar varchar(5) comment "血糖",
+  update_time datetime  not null comment "资料更新时间"
+);
+
+-- 用户病例数据 （暂不考虑）
+-- drop table if exists case_data;
+-- create table case_data(
+--   cid int primary key  comment "病例编号",
+--   uid int comment "绑定的用户id",
+-- 入院日期 感染日期 报告 入院诊断 报告科室
+-- );
+
+-- 预约挂号订单
+drop table if exists order_yy;
+create table order_yy(
+  oid int primary key comment "预约号id",
+  uid int not null comment "就诊的用户id",
+  did int not null comment "预约的医生id",
+  yy_time datetime  not null comment "预约的时间",
+  state tinyint default 0 comment "订单状态（0：待诊断/1：正在诊断/2：诊断完成/）",
+  create_time datetime  not null comment "订单创建时间",
+  update_time datetime  not null comment "订单更新时间"
+);
+
+-- 病史数据
+
+-- 用药提醒数据
+
+-- 疾病分类数据
+
+-- 具体疾病数据
+
+-- 新闻数据
+
+-- 社区活动数据
+
+-- -----------------------------------------------
+-- 社区药房模块（好像有点多 做不做待定）
+
+-- 药品（商品）: 编号 名称 价格 库存 状态 ..
+-- 订单 ：订单编号 收货地址编号 订单状态 ...
+-- 物流信息 物流单号 订单编号 物流状态 ...
+
+-- 用户收货地址(和用户信息里的地址区分，用于药房收货地址)
+drop table if exists addrlist;
+create table addrlist(
+  aid int primary key comment "地址编号",
+  uid int not null comment "绑定的用户id",
+  name varchar(10) comment "收货人",
+  phone varchar(11)  comment "手机号",
+  address varchar(50) not null comment "地址详细信息"
 );
 
