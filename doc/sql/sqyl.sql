@@ -110,7 +110,7 @@ create table medical_history(
   mid int primary key comment "编号",
   uid int not null comment "用户id",
   type tinyint default 0 comment "病史类型",
-  desc varchar(50) not null comment "病史说明",
+  disable varchar(50) not null comment "病史说明",
   medical_time datetime  not null comment "病史时间"
 );
 
