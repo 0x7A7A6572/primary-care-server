@@ -19,11 +19,15 @@ create table if not exists hospital(
 
 -- 科室信息
 drop table if exists depa;
-create table if not exists depa(
-  did int primary key  comment "科室id/编号",
-  title varchar(50) not null comment "科室名",
-  hid int not null  comment "所属医院"
-);
+  CREATE TABLE `depa`  (
+  `did` int(11) NOT NULL COMMENT '科室id/编号',
+  `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '科室名',
+  `hid` int(11) NOT NULL COMMENT '所属医院',
+  PRIMARY KEY (`did`) USING BTREE,
+  INDEX `hid`(`hid`) USING BTREE,
+  CONSTRAINT `hid` FOREIGN KEY (`hid`) REFERENCES `hospital` (`hid`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
 
 -- 医生信息
 drop table if exists doctor;
