@@ -40,7 +40,7 @@ create table doctor(
   gender boolean default 0 comment "医生性别",
   depa varchar(10) comment "科室名",
   did int default 0 comment "科室id",
-  hospital_id int comment "绑定医院id"
+  hid int comment "绑定医院id"
 );
 
 -- 药品信息
