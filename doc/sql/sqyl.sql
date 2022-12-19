@@ -105,6 +105,14 @@ create table order_yy(
 );
 
 -- 病史数据
+drop table if exists medical_history;
+create table medical_history(
+  mid int primary key comment "编号",
+  uid int not null comment "用户id",
+  type tinyint default 0 comment "病史类型",
+  desc varchar(50) not null comment "病史说明",
+  medical_time datetime  not null comment "病史时间"
+);
 
 -- 用药提醒数据
 drop table if exists med_reminder;
