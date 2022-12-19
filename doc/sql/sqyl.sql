@@ -107,8 +107,8 @@ create table med_reminder(
   uid int not null comment "提醒的用户id",
   medname varchar(15) not null comment "药品名称",
   reminder_time datetime  not null comment "提醒的时间",
-  company varchar(10) comment  not null "用药单位",
-  dose varchar(10)  not null comment "剂量"
+  company varchar(10) not null comment  "用药单位",
+  dose varchar(10)  not null comment "剂量",
   create_time datetime  not null comment "订单创建时间"
 );
 
