@@ -125,6 +125,17 @@ CREATE TABLE `disease`  (
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- 新闻数据
+DROP TABLE IF EXISTS `newpaper`;
+CREATE TABLE `newpaper`  (
+  `id` int(11) NOT NULL COMMENT '新闻id',
+  `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '新闻标题',
+  `img` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '新闻图片',
+  `body` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '新闻内容',
+  `date` datetime(0) DEFAULT NULL COMMENT '新闻时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- 社区活动数据
 
