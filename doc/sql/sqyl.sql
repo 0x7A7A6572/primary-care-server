@@ -103,8 +103,26 @@ create table order_yy(
 -- 用药提醒数据
 
 -- 疾病分类数据
+DROP TABLE IF EXISTS `subject`;
+CREATE TABLE `subject`  (
+  `sid` int(11) NOT NULL COMMENT '病种分类id',
+  `subject` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '病种',
+  PRIMARY KEY (`sid`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- 具体疾病数据
+DROP TABLE IF EXISTS `disease`;
+CREATE TABLE `disease`  (
+  `did` int(11) NOT NULL COMMENT '病种详细分类id',
+  `Disease` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '病种',
+  `fid` int(11) NOT NULL COMMENT '病种分类外键id',
+  PRIMARY KEY (`did`) USING BTREE,
+  CONSTRAINT `disease_ibfk_1` FOREIGN KEY (`did`) REFERENCES `subject` (`sid`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- 新闻数据
 drop table if exists news;
