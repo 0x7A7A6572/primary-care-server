@@ -106,6 +106,7 @@ create table order_yy(
 
 -- 病史数据
 
+
 -- 用药提醒数据
 drop table if exists med_reminder;
 create table med_reminder(
