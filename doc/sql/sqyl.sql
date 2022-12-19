@@ -101,6 +101,16 @@ create table order_yy(
 -- 病史数据
 
 -- 用药提醒数据
+drop table if exists med_reminder;
+create table med_reminder(
+  rid int primary key comment "编号",
+  uid int not null comment "提醒的用户id",
+  medname varchar(15) not null comment "药品名称",
+  reminder_time datetime  not null comment "提醒的时间",
+  company varchar(10) comment  not null "用药单位",
+  dose varchar(10)  not null comment "剂量"
+  create_time datetime  not null comment "订单创建时间"
+);
 
 -- 疾病分类数据
 DROP TABLE IF EXISTS `subject`;
