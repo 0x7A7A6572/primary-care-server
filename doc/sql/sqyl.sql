@@ -107,7 +107,14 @@ create table order_yy(
 -- 具体疾病数据
 
 -- 新闻数据
-
+drop table if exists news;
+create table news(
+  nid int primary key comment "新闻编号",
+  hot int default 0 comment "热度",
+  title varchar(20)  not null comment "标题",
+  content varchar(3000) comment "新闻内容",
+  create_time datetime  not null comment "新闻发布时间"
+);
 -- 社区活动数据
 
 -- -----------------------------------------------
