@@ -33,7 +33,9 @@ create table doctor(
   grade varchar(10) not null  comment "等级（医师/护士..）",
   good_at varchar(50) not null comment "擅长领域",
   avatar varchar(200) comment "医生头像",
-  -- gender boolean not null comment "医生性别",
+  gender boolean default 0 comment "医生性别",
+  depa varchar(10) comment "科室名",
+  did int default 0 comment "科室id",
   hospital_id int comment "绑定医院id"
 );
 
