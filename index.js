@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
-const port = 3111; // 服务端口
-
+const port = process.env.INDEX_PORT; // 服务端口
+const jwt = require("jsonwebtoken");
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const Response = require("./utils/Response.js");
 
 // 配置跨域

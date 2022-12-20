@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
-const port = 9000;
+const port = process.env.UPLOAD_PORT;
 const Response = require('./utils/Response.js');
-const BASE  = "http://localhost:9000/";
+const BASE  = `http://localhost:${port}/`;
 // const BASE  = "http://部署的地址/"
 
 // 配置跨域
