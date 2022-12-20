@@ -91,6 +91,7 @@ function fllterUserData(u){
   return {
     uid: u.uid,
     name: u.name,
+    avatar: u.avatar,
     phone: u.phone,
     gender: u.gender,
     birthday: u.birthday,

@@ -67,7 +67,8 @@ drop table if exists user;
 create table user(
   uid int auto_increment primary key,
   name varchar(20) not null comment "姓名",
-  phone varchar(13),
+  avatar varchar(100)  comment "头像",
+  phone varchar(13)  comment "手机号",
   -- married boolean not null comment "是否已婚",
   gender boolean not null comment "性别",
   -- age tinyint not null comment "年龄",
