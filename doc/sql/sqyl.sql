@@ -73,6 +73,7 @@ create table user(
   -- age tinyint not null comment "年龄",
   birthday date not null comment "生日",
   shenfenzheng varchar(18) not null comment "居民身份证",
+  pwdmd5 varchar(32) not null comment "用户密码md5值",
   address varchar(50) comment "用户地址",
   isdoctor boolean default 0 comment "是否是医生",
   create_time datetime not null comment "用户创建时间",
