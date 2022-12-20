@@ -11,7 +11,7 @@ use sqyl_db;
 drop table if exists hospital;
 
 create table if not exists hospital(
-  hid int primary key comment "医院id",
+  hid int auto_increment primary key comment "医院id",
   title varchar(50) not null comment "医院名",
   logo varchar(200) not null comment "医院logo",
   grade varchar(50) not null comment "医院等级",
@@ -37,7 +37,7 @@ CREATE TABLE `depa` (
 drop table if exists doctor;
 
 create table doctor(
-  id int primary key,
+  id int auto_increment primary key,
   name varchar(50) not null comment "姓名",
   grade varchar(10) not null comment "等级（医师/护士..）",
   good_at varchar(50) not null comment "擅长领域",
@@ -52,7 +52,7 @@ create table doctor(
 drop table if exists drugs;
 
 create table drugs(
-  id int primary key,
+  id int auto_increment primary key,
   signid varchar(20) comment "注册号",
   name varchar(50) comment "药品名称",
   type varchar(10) comment "剂型",
@@ -65,7 +65,7 @@ create table drugs(
 drop table if exists user;
 
 create table user(
-  uid int primary key,
+  uid int auto_increment primary key,
   name varchar(20) not null comment "姓名",
   phone varchar(13),
   -- married boolean not null comment "是否已婚",
@@ -103,7 +103,7 @@ create table health(
 drop table if exists order_yy;
 
 create table order_yy(
-  oid int primary key comment "预约号id",
+  oid int auto_increment primary key comment "预约号id",
   uid int not null comment "就诊的用户id",
   did int not null comment "预约的医生id",
   yy_time datetime not null comment "预约的时间",
@@ -116,7 +116,7 @@ create table order_yy(
 drop table if exists medical_history;
 
 create table medical_history(
-  mid int primary key comment "编号",
+  mid int auto_increment primary key comment "编号",
   uid int not null comment "用户id",
   type tinyint default 0 comment "病史类型",
   disable varchar(50) not null comment "病史说明",
@@ -127,7 +127,7 @@ create table medical_history(
 drop table if exists med_reminder;
 
 create table med_reminder(
-  rid int primary key comment "编号",
+  rid int auto_increment primary key comment "编号",
   uid int not null comment "提醒的用户id",
   medname varchar(15) not null comment "药品名称",
   reminder_time datetime not null comment "提醒的时间",
@@ -166,7 +166,7 @@ SET
 drop table if exists news;
 
 create table news(
-  nid int primary key comment "新闻编号",
+  nid int auto_increment primary key comment "新闻编号",
   hot int default 0 comment "热度",
   title varchar(20) not null comment "标题",
   content varchar(3000) comment "新闻内容",
@@ -197,7 +197,7 @@ create table resident_doctor(
 drop table if exists addrlist;
 
 create table addrlist(
-  aid int primary key comment "地址编号",
+  aid int auto_increment primary key comment "地址编号",
   uid int not null comment "绑定的用户id",
   name varchar(10) comment "收货人",
   phone varchar(11) comment "手机号",
