@@ -1,3 +1,6 @@
+const dotenv = require("dotenv");
+// 定义全局系统环境变量
+dotenv.config({ path: './.env' });
 const express = require('express');
 const cors = require('cors');
 const socket = require('socket.io');
@@ -24,7 +27,7 @@ io.on('connection', user => {
   console.log('user:', user);
   user.on(MSG_TYPE.USER,  Msg =>{
    let {uid, token, msg} = Msg;
-   
+
    verifyToken(uid, token).then(res=>{
 
    }).catch(err=>{

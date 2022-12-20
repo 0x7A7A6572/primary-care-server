@@ -1,3 +1,6 @@
+const dotenv = require("dotenv");
+// 定义全局系统环境变量
+dotenv.config({ path: './.env' });
 const express = require('express');
 const app = express();
 const port = process.env.UPLOAD_PORT;
