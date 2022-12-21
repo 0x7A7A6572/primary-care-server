@@ -20,6 +20,10 @@ const utils = {
     let d = new Date();
     return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
   },
+  getDateTime() {
+    let d = new Date();
+    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes() + 1}:${d.getSeconds()} `;
+  },
   dateToTime(date = date.toString()) {
     return new Date(date)?.getTime() || 0;
   }

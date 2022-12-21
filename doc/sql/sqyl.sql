@@ -65,7 +65,7 @@ create table drugs(
 drop table if exists user;
 
 create table user(
-  uid int auto_increment primary key,
+  uid varchar(18) primary key comment "居民身份证",
   name varchar(20) not null comment "姓名",
   avatar varchar(100)  comment "头像",
   phone varchar(13)  comment "手机号",
@@ -73,7 +73,7 @@ create table user(
   gender boolean not null comment "性别",
   -- age tinyint not null comment "年龄",
   birthday date not null comment "生日",
-  shenfenzheng varchar(18) not null comment "居民身份证",
+  -- shenfenzheng varchar(18) not null comment "居民身份证",
   pwdmd5 varchar(32) not null comment "用户密码md5值",
   address varchar(50) comment "用户地址",
   isdoctor boolean default 0 comment "是否是医生",
@@ -85,11 +85,11 @@ create table user(
 drop table if exists health;
 
 create table health(
-  uid int primary key comment "绑定的用户id",
+  uid varchar(18) primary key comment "绑定的用户id",
   height int comment "身高",
   weight int comment "体重",
-  blood_ressure varchar(5) comment "血压",
-  blood_sugar varchar(5) comment "血糖",
+  blood_ressure varchar(8) comment "血压",
+  blood_sugar varchar(8) comment "血糖",
   update_time datetime not null comment "资料更新时间"
 );
 
@@ -97,7 +97,7 @@ create table health(
 -- drop table if exists case_data;
 -- create table case_data(
 --   cid int primary key  comment "病例编号",
---   uid int comment "绑定的用户id",
+--   uid varchar(18)  comment "绑定的用户id",
 -- 入院日期 感染日期 报告 入院诊断 报告科室
 -- );
 -- 预约挂号订单
@@ -105,7 +105,7 @@ drop table if exists order_yy;
 
 create table order_yy(
   oid int auto_increment primary key comment "预约号id",
-  uid int not null comment "就诊的用户id",
+  uid varchar(18) not null comment "就诊的用户id",
   did int not null comment "预约的医生id",
   yy_time datetime not null comment "预约的时间",
   state tinyint default 0 comment "订单状态（0：待诊断/1：正在诊断/2：诊断完成/）",
@@ -118,10 +118,10 @@ drop table if exists medical_history;
 
 create table medical_history(
   mid int auto_increment primary key comment "编号",
-  uid int not null comment "用户id",
+  uid varchar(18) not null comment "用户id",
   type tinyint default 0 comment "病史类型",
   disable varchar(50) not null comment "病史说明",
-  medical_time datetime not null comment "病史时间"
+  medical_time date not null comment "病史时间"
 );
 
 -- 用药提醒数据
@@ -129,12 +129,12 @@ drop table if exists med_reminder;
 
 create table med_reminder(
   rid int auto_increment primary key comment "编号",
-  uid int not null comment "提醒的用户id",
+  uid varchar(18) not null comment "提醒的用户id",
   medname varchar(15) not null comment "药品名称",
   reminder_time datetime not null comment "提醒的时间",
   company varchar(10) not null comment "用药单位",
   dose varchar(10) not null comment "剂量",
-  create_time datetime not null comment "订单创建时间"
+  create_time datetime not null comment "创建时间"
 );
 
 -- 疾病分类数据
@@ -179,7 +179,7 @@ create table news(
 -- 入驻医生信息
 drop table if exists resident_doctor;
 create table resident_doctor(
-  uid int primary key comment "入驻信息绑定的用户",
+  uid varchar(18) primary key comment "入驻信息绑定的用户",
   grade varchar(10) not null comment "等级（医师/护士..）",
   good_at varchar(50) not null comment "擅长领域",
   avatar varchar(200) comment "医生头像(取用户信息)",
@@ -199,7 +199,7 @@ drop table if exists addrlist;
 
 create table addrlist(
   aid int auto_increment primary key comment "地址编号",
-  uid int not null comment "绑定的用户id",
+  uid varchar(18) not null comment "绑定的用户id",
   name varchar(10) comment "收货人",
   phone varchar(11) comment "手机号",
   address varchar(50) not null comment "地址详细信息"

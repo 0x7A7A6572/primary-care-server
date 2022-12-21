@@ -52,5 +52,5 @@ function verifyToken(uid, token) {
 }
 
 server.listen(port, function () {
-  console.log("[", port, "]聊天服务器已启动", port);
+  console.log("[", port, "]聊天服务器已启动...");
 });
