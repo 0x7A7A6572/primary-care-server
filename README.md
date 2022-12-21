@@ -10,11 +10,18 @@
 ├─test # 测试文件（.gitignore忽略）
 ├─utils # 工具类
 │  ├─db.js # 数据库连接池
+│  ├─utils.js # 封装的一写功能
 │  └─Response.js # 请求响应处理对象
 ├─index.js  # 主接口服务器
 ├─uploadServer.js  # 上传文件服务器
 ├─chatServer.js  # 聊天服务器
 ├─.env  # 配置
 
+```
+
+## 运行项目
+```sh
+## 启动所有服务
+ pm2 start .\index.js .\chatServer.js .\uploadServer.js
 ```
 
