@@ -120,7 +120,7 @@ create table medical_history(
   mid int auto_increment primary key comment "编号",
   uid varchar(18) not null comment "用户id",
   type tinyint default 0 comment "病史类型",
-  disable varchar(50) not null comment "病史说明",
+  descs varchar(50) not null comment "病史说明",
   medical_time date not null comment "病史时间"
 );
 

@@ -138,7 +138,48 @@ router.post("/user/update_health", async (req, resp) => {
   } catch (error) {
     resp.send(Response.error(500, error));
   }
-})
+});
+
+// 查询用户病史数据
+router.get("/user/medical_history", async (req, resp) => {
+// 从tokenPayload中拿到uid
+  let uid = req.tokenPayload.uid;
+  if (!uid) return resp.send(Response.ok({ code: 400, msg: "uid not playload in token!" }));
+  // 查询返回
+  let find_medhis_sql = `select * from medical_history where uid=?`;
+  try {
+    let dbres =  await utils.query(find_medhis_sql, [uid]);
+    resp.send(Response.ok({ code: 200, msg: "获取成功", data:dbres}));
+  } catch (error) {
+    resp.send(Response.error(500, error));
+  }  
+});
+
+// 添加病史
+router.post("/user/add_medical_history", async (req, resp) => {
+  let { /* type, */ descs, medical_time } = req.body;
+  // 表单验证
+  let schema = Joi.object({
+    // type: Joi.number().required(),
+    descs: Joi.string().required(),
+    medical_time: Joi.required()
+  });
+  let { error, value } = schema.validate(req.body);
+  if (error) return resp.send(Response.error(400, error));
+  // 从tokenPayload中拿到uid
+  let uid = req.tokenPayload.uid;
+  if (!uid) return resp.send(Response.ok({ code: 400, msg: "uid not playload in token!" }));
+  // 查询返回
+  let add_medhis_sql = `insert into medical_history   
+  (mid,uid,type,descs,medical_time) 
+  values(?,?,?,?,?)`;
+  try {
+    await utils.query(add_medhis_sql, [null,uid,0,descs,medical_time]);
+    resp.send(Response.ok({ code: 200, msg: "添加成功"}));
+  } catch (error) {
+    resp.send(Response.error(500, error));
+  }  
+});
 
 // 过滤处理用户信息字段(密码不返回)
 function fllterUserData(u) {
