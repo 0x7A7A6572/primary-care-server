@@ -7,7 +7,6 @@ const port = process.env.INDEX_PORT; // 服务端口
 const jwt = require("jsonwebtoken");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const Response = require("./utils/Response.js");
-
 // 配置跨域
 const cors = require("cors");
 const utils = require("./utils/utils.js");
@@ -24,7 +23,9 @@ app.use(express.urlencoded());
 app.use(function (req, resp, next) {
   //  拦截白名单
   if (  req.path == '/user/login'
-     || req.path == '/user/register') return next()
+     || req.path == '/user/register'
+     || req.path=='/search/drugs'
+     || req.path=='/search/drugs/list') return next()
 
   // 测试环境中，不做token拦截，直接执行后续业务(有些接口会受到影响)
   //  return next();
@@ -43,6 +44,8 @@ app.use(function (req, resp, next) {
 
 // 引入外部路由
 app.use(require("./router/user.js"));
+// app.use(require("./router/drugs.js"));
+app.use(require('./router/drugs'))
 
 
 /**

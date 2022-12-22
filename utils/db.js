@@ -4,6 +4,7 @@ const pool = mysql.createPool({
   connectionLimit: 20, // 最大连接数
   host: "localhost", // 主机地址
   user: "root", // 用户名
+  port: '3306',
   password: "", // 密码
   database: "sqyl_db", // 数据库名
 });
