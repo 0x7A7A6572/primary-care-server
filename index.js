@@ -25,7 +25,12 @@ app.use(function (req, resp, next) {
   if (  req.path == '/user/login'
      || req.path == '/user/register'
      || req.path=='/search/drugs'
-     || req.path=='/search/drugs/list') return next()
+     || req.path=='/search/drugs/list'
+     || req.path=='/hospital/name'
+     || req.path=='/hospital/limit'
+     || req.path=='/hospital/subject'
+   
+    ) return next()
 
   // 测试环境中，不做token拦截，直接执行后续业务(有些接口会受到影响)
   //  return next();
@@ -46,6 +51,8 @@ app.use(function (req, resp, next) {
 app.use(require("./router/user.js"));
 // app.use(require("./router/drugs.js"));
 app.use(require('./router/drugs'))
+app.use(require('./router/hospital.js'))
+
 
 
 /**
