@@ -84,7 +84,7 @@ router.post("/user/login", async (req, resp) => {
     // 验证成功 生成token
     let { uid, name } = dbres[0];
     let payload = { uid, name };
-    let token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '1d' }); // 1d用于测试，发布时改成30d
+    let token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '15d' }); // TODO 用于测试，发布时改成30d
     resp.send(Response.ok({ user: fllterUserData(dbres[0]), token }));
   } catch (error) {
     resp.send(Response.error(500, error));

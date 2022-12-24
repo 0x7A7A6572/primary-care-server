@@ -22,10 +22,10 @@ app.use(express.urlencoded());
 // 请求拦截器处理 全局验证token
 app.use(function (req, resp, next) {
   //  拦截白名单
-  if (  req.path == '/user/login'|| req.path == '/user/register') return next()
+  if (  req.path == '/user/login'|| req.path == '/user/register') return next();
 
-  // 测试环境中，不做token拦截，直接执行后续业务(有些接口会受到影响)
-   return next();
+  // TODO 测试环境中，不做token拦截，直接执行后续业务(有些接口会受到影响)
+  //  return next();
 
   // 执行token验证
   let token = utils.delBearer(req.headers["authorization"]);
@@ -44,6 +44,7 @@ app.use(require("./router/user.js"));
 // app.use(require("./router/drugs.js"));
 app.use(require('./router/drugs'))
 app.use(require('./router/hospital.js'))
+app.use(require("./router/reminder"));
 
 
 
