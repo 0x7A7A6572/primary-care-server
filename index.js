@@ -45,6 +45,7 @@ app.use(require("./router/user.js"));
 app.use(require('./router/drugs'))
 app.use(require('./router/hospital.js'))
 app.use(require("./router/reminder"));
+app.use(require("./router/news"));
 app.use(require("./router/register"));
 /**
  * 接口， 处理/请求
