@@ -168,8 +168,9 @@ drop table if exists news;
 
 create table news(
   nid int auto_increment primary key comment "新闻编号",
-  hot int default 0 comment "热度",
+  hot int default 0 comment "热度/有帮助数",
   title varchar(20) not null comment "标题",
+  cover varchar(200) comment "新闻图片链接",
   content varchar(3000) comment "新闻内容",
   create_time datetime not null comment "新闻发布时间"
 );
