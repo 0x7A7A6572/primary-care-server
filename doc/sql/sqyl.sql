@@ -131,7 +131,12 @@ create table med_reminder(
   rid int auto_increment primary key comment "编号",
   uid varchar(18) not null comment "提醒的用户id",
   medname varchar(15) not null comment "药品名称",
-  reminder_time datetime not null comment "提醒的时间",
+  dtstatr datetime not null comment "提醒的开始时间",
+  dtend datetime not null comment "提醒的结束时间",
+  freq varchar(10) comment "重复提醒的频率(DAILY/WEEKLY)",
+  until datetime comment "重复的结束时间",
+  icsurl varchar(50) comment "远程ics文件的地址",
+  intervalue int default 1 comment "重复的间隔",
   units varchar(10) not null comment "用药单位",
   dose varchar(10) not null comment "剂量",
   create_time datetime not null comment "创建时间"

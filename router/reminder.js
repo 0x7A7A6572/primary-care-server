@@ -48,12 +48,16 @@ router.post("/reminder/del", async (req, resp) => {
 
 // 新增用药提醒
 router.post("/reminder/add", async (req, resp) => {
-  let { medname, units, reminder_time, dose } = req.body;
+  let { medname, units, dtstatr, dtend, freq, until, intervalue, dose } = req.body;
   // 表单验证
   let schema = Joi.object({
     medname: Joi.string().required(),
     units: Joi.string().required(),
-    reminder_time: Joi.date().required(),
+    dtstatr: Joi.date().required(),
+    dtend: Joi.date().required(),
+    freq: Joi.string().required(),
+    until: Joi.date().required(),
+    intervalue: Joi.number().required(),
     dose: Joi.string().required()
   });
   let { error, value } = schema.validate(req.body);
