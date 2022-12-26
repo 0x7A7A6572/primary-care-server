@@ -20,7 +20,7 @@ router.get('/news/list', async (req, resp) => {
     let sql2 = "select count(*) from news";
     let result2 = await pool.querySync(sql2, []);
     let total = result2[0].count;
-    resp.send(Response.ok({ code: 200, msg: "获取成功", page, total, data: dbres }));
+    resp.send(Response.ok({ page, total, data: dbres },"获取成功"));
   } catch (error) {
     resp.send(Response.error(error));
   }
@@ -37,7 +37,7 @@ router.post('/news/detail', async (req, resp) => {
   try {
     let sql = "select * from news where nid=?";
     let dbres = await pool.querySync(sql, [nid]);
-    resp.send(Response.ok({ code: 200, msg: "获取成功", data: dbres[0] }));
+    resp.send(Response.ok({ ...dbres[0] }, "获取成功"));
   } catch (error) {
     resp.send(Response.error(error));
   }
@@ -58,7 +58,7 @@ router.post('/news/add', async (req, resp) => {
   try {
     let sql = "insert into news(hot, title, cover, content, create_time) values(?,?,?,?,?)";
     let dbres = await pool.querySync(sql, [hot,title,cover,content,create_time]);
-    resp.send(Response.ok({ code: 200, msg: "添加成功"}));
+    resp.send(Response.ok({}, "添加成功"));
   } catch (error) {
     console.log("error: ",error);
     resp.send(Response.error(error));

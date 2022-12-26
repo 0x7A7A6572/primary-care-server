@@ -5,10 +5,10 @@ const response = {
      * 返回正确的响应对象 {code:200, msg:'ok', data:data}
      * @param {Object} data 响应数据
      */
-    ok : (data) => {
+    ok : (data, msg="ok") => {
         return {
             code : 200,
-            msg  : 'ok',
+            msg,
             data : data
         }
     },
