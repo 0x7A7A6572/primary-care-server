@@ -110,7 +110,8 @@ create table order_yy(
   yy_time datetime not null comment "预约的时间",
   state tinyint default 0 comment "订单状态（0：待诊断/1：正在诊断/2：诊断完成/）",
   create_time datetime not null comment "订单创建时间",
-  update_time datetime not null comment "订单更新时间"
+  update_time datetime not null comment "订单更新时间",
+  hid int not null comment "医院id",
 );
 
 -- 病史数据
@@ -132,7 +133,7 @@ create table med_reminder(
   uid varchar(18) not null comment "提醒的用户id",
   medname varchar(15) not null comment "药品名称",
   reminder_time datetime not null comment "提醒的时间",
-  company varchar(10) not null comment "用药单位",
+  units varchar(10) not null comment "用药单位",
   dose varchar(10) not null comment "剂量",
   create_time datetime not null comment "创建时间"
 );
@@ -168,8 +169,9 @@ drop table if exists news;
 
 create table news(
   nid int auto_increment primary key comment "新闻编号",
-  hot int default 0 comment "热度",
+  hot int default 0 comment "热度/有帮助数",
   title varchar(20) not null comment "标题",
+  cover varchar(200) comment "新闻图片链接",
   content varchar(3000) comment "新闻内容",
   create_time datetime not null comment "新闻发布时间"
 );

@@ -56,9 +56,9 @@ router.post("/user/register", async (req, resp) => {
         utils.getDate(), utils.getDate()]);
       // 插入健康数据
       await utils.query(add_healthy_sql, [uid, 0, 0, "-", "-", utils.getDate()]);
-      resp.send(Response.ok({ code: 200, msg: '恭喜，注册成功！' }));
+      resp.send(Response.ok({}, '恭喜，注册成功！'));
     } else {
-      resp.send(Response.ok({ code: 400, msg: '该身份证/手机号已被注册！' }));
+      resp.send(Response.error(400, '该身份证/手机号已被注册！'));
     }
   } catch (err) {
     resp.send(Response.error(500, err));
@@ -80,11 +80,11 @@ router.post("/user/login", async (req, resp) => {
   let checkPwd_sql = "select * from user where (phone=? and pwdmd5=?) or (uid=? and pwdmd5=?)";
   try {
     let dbres = await utils.query(checkPwd_sql, [phone, pwdmd5, phone, pwdmd5]);
-    if (dbres.length == 0) return resp.send(Response.ok({ code: 400, msg: '账号或密码不正确' }));
+    if (dbres.length == 0) return resp.send(Response.error(400, '账号或密码不正确!')); 
     // 验证成功 生成token
     let { uid, name } = dbres[0];
     let payload = { uid, name };
-    let token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '1d' }); // 1d用于测试，发布时改成30d
+    let token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '15d' }); // TODO 用于测试，发布时改成30d
     resp.send(Response.ok({ user: fllterUserData(dbres[0]), token }));
   } catch (error) {
     resp.send(Response.error(500, error));
@@ -103,12 +103,12 @@ router.post("/user/update", async (req, resp) => {
   if (error) return resp.send(Response.error(400, error));
   // 从tokenPayload中拿到uid
   let uid = req.tokenPayload.uid;
-  if (!uid) return resp.send(Response.ok({ code: 400, msg: "uid not playload in token!" }));
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
   let sql = "update user set ? where uid=?";
   try {
     let dbres = await utils.query(sql, [{ avatar, address, update_time: utils.getDate() }, uid]);
-    if (dbres.affectedRows != 1) return resp.send(Response.ok({ code: 400, msg: "更新用户信息失败", uid }));
-    resp.send(Response.ok({ code: 200, msg: "更新用户信息成功" }));
+    if (dbres.affectedRows != 1) return resp.send(Response.error( 400, "更新用户信息失败"));
+    resp.send(Response.ok({}, "更新用户信息成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
@@ -128,13 +128,13 @@ router.post("/user/update_health", async (req, resp) => {
   if (error) return resp.send(Response.error(400, error));
   // 从tokenPayload中拿到uid
   let uid = req.tokenPayload.uid;
-  if (!uid) return resp.send(Response.ok({ code: 400, msg: "uid not playload in token!" }));
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
   // 更新健康数据
   let insHealthySql = `update health set ? where uid=?`;
   try {
     let dbres = await utils.query(insHealthySql, [{ uid, height, weight, blood_ressure, blood_sugar, update_time: utils.getDateTime() }, uid]);
-    if (dbres.affectedRows != 1) return resp.send(Response.ok({ code: 400, msg: "更新健康信息失败", uid }));
-    resp.send(Response.ok({ code: 200, msg: "更新用户健康信息成功" }));
+    if (dbres.affectedRows != 1) return resp.send(Response.error(400, "更新健康信息失败"));
+    resp.send(Response.ok({},"更新用户健康信息成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
@@ -144,12 +144,12 @@ router.post("/user/update_health", async (req, resp) => {
 router.get("/user/medical_history", async (req, resp) => {
   // 从tokenPayload中拿到uid
   let uid = req.tokenPayload.uid;
-  if (!uid) return resp.send(Response.ok({ code: 400, msg: "uid not playload in token!" }));
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
   // 查询返回
   let find_medhis_sql = `select * from medical_history where uid=?`;
   try {
     let dbres = await utils.query(find_medhis_sql, [uid]);
-    resp.send(Response.ok({ code: 200, msg: "获取成功", data: dbres }));
+    resp.send(Response.ok({ dbres }, "获取成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
@@ -168,14 +168,14 @@ router.post("/user/add_medical_history", async (req, resp) => {
   if (error) return resp.send(Response.error(400, error));
   // 从tokenPayload中拿到uid
   let uid = req.tokenPayload.uid;
-  if (!uid) return resp.send(Response.ok({ code: 400, msg: "uid not playload in token!" }));
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
   // 查询返回
   let add_medhis_sql = `insert into medical_history   
   (mid,uid,type,descs,medical_time) 
   values(?,?,?,?,?)`;
   try {
     await utils.query(add_medhis_sql, [null, uid, 0, descs, medical_time]);
-    resp.send(Response.ok({ code: 200, msg: "添加成功" }));
+    resp.send(Response.ok({}, "添加成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
@@ -198,7 +198,7 @@ router.post("/user/doctor_cer", async (req, resp) => {
   if (error) return resp.send(Response.error(400, error));
   // 从tokenPayload中拿到uid
   let uid = req.tokenPayload.uid;
-  if (!uid) return resp.send(Response.ok({ code: 400, msg: "uid not playload in token!" }));
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
   // 查询返回
   let doctor_cer_sql = `insert into resident_doctor   
   (uid,grade,good_at,avatar,gender,depa,did,hid) 
@@ -207,7 +207,7 @@ router.post("/user/doctor_cer", async (req, resp) => {
   try {
     await utils.query(doctor_cer_sql, [uid, grade, good_at, avatar, gender, depa, did, hid]);
     await utils.query(update_user_sql, [uid]);
-    resp.send(Response.ok({ code: 200, msg: "添加成功" }));
+    resp.send(Response.ok({}, "添加成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
