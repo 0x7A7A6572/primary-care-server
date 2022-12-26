@@ -28,7 +28,7 @@ app.use(function (req, resp, next) {
      || req.path=='/search/drugs/list') return next()
 
   // 测试环境中，不做token拦截，直接执行后续业务(有些接口会受到影响)
-  //  return next();
+   return next();
 
   // 执行token验证
   let token = utils.delBearer(req.headers["authorization"]);
@@ -46,6 +46,7 @@ app.use(function (req, resp, next) {
 app.use(require("./router/user.js"));
 // app.use(require("./router/drugs.js"));
 app.use(require('./router/drugs'))
+app.use(require('./router/bible.js'))
 
 
 /**
