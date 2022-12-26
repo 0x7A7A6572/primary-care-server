@@ -25,6 +25,11 @@
  pm2 start .\index.js .\chatServer.js .\uploadServer.js
 ```
 
+## 接口文档地址
+https://console-docs.apipost.cn/preview/81f4754cdd5a0c2d/6d3f156aaa7cdf6f
+
+
+
 ## 工作划分
 
 | 铭     | 浩     | 亮     |
