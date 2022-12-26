@@ -5,16 +5,6 @@ const Response = require("../utils/Response.js");
 const utils = require("../utils/utils.js");
 
 
-// create table med_reminder(
-//   rid int auto_increment primary key comment "编号",
-//   uid varchar(18) not null comment "提醒的用户id",
-//   medname varchar(15) not null comment "药品名称",
-//   reminder_time datetime not null comment "提醒的时间",
-//   units varchar(10) not null comment "用药单位",
-//   dose varchar(10) not null comment "剂量",
-//   create_time datetime not null comment "创建时间"
-// );
-
 /**
  * 用药提醒模块
  */
