@@ -80,4 +80,29 @@ router.post('/hospital/subject',async (req,res)=>{
         res.send(Response.error(error));
       }
 })
+
+router.post('/hospital/docotor',async (req,res)=>{
+  let {hid,did}=req.body;
+  let schema = Joi.object({
+      hid: Joi.number().required(), 
+      did: Joi.number().required(), 
+    })
+    let { error, value } = schema.validate(req.body);
+    if (error) {
+      res.send(Response.error(400, error));
+      return; // 结束
+    }
+    try {
+      let sql = "select * from doctor where hid=? and did=? ";
+      let result = await pool.querySync(sql, [hid,did]);
+      // 执行查询总条目数
+      res.send(
+        Response.ok({result })
+      );
+    } catch (error) {
+      res.send(Response.error(error));
+    }
+})
+
+// 查询该医院对应科室的医生列表
 module.exports = router;
