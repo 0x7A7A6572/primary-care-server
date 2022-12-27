@@ -9,13 +9,14 @@ const Response = require("../utils/Response.js");
 router.post('/register/add',async (req,res)=>{
     let {uid,did
         ,yy_time,
-        state,
+        state,hid,
         create_time,
         update_time
     }=req.body;
     let schema = Joi.object({
-        uid: Joi.number().required(), 
+        uid: Joi.string().required(), 
         did: Joi.number().required(), 
+        hid: Joi.number().required(),
         yy_time:Joi.string().required(), 
         state: Joi.number().required(),
         create_time:Joi.string().required(),
@@ -27,12 +28,12 @@ router.post('/register/add',async (req,res)=>{
         return; // 结束
       }
       try {
-        let sql = "INSERT INTO `order_yy` (uid,did,yy_time,state,create_time,update_time) VALUES(?,?,?,?,?,?);"
+        let sql = "INSERT INTO `order_yy` (uid,did,yy_time,state,create_time,update_time,hid) VALUES(?,?,?,?,?,?,?);"
         let result = await pool.querySync(sql, [uid,did
             ,yy_time,
             state,
             create_time,
-            update_time]);
+            update_time, hid]);
         res.send(
           Response.ok({  result })
         );
@@ -45,7 +46,7 @@ router.post('/register/list',async (req,res)=>{
     let {uid
     }=req.body;
     let schema = Joi.object({
-        uid: Joi.number().required(), 
+        uid: Joi.string().required(), 
        
       })
       let { error, value } = schema.validate(req.body);
@@ -54,10 +55,10 @@ router.post('/register/list',async (req,res)=>{
         return; // 结束
       }
       try {
-        let sql = `SELECT o.yy_time,d.name,a.address,o.oid,d.id,a.hid
+        let sql = `SELECT o.yy_time,d.name,a.title,a.address,o.oid,d.id,a.hid
         FROM order_yy o join doctor d on o.did=d.did
-        join hospital a on a.hid>0
-        where o.uid=2
+        join hospital a 
+        where o.uid=?
         GROUP BY yy_time desc;`
         let result = await pool.querySync(sql, [uid]);
         res.send(
@@ -75,7 +76,7 @@ router.post('/register/updata',async (req,res)=>{
   }=req.body;
   let schema = Joi.object({
       state: Joi.number().required(), 
-      uid: Joi.number().required(), 
+      uid: Joi.string().required(), 
     })
     let { error, value } = schema.validate(req.body);
     if (error) {
