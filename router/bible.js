@@ -11,7 +11,7 @@ router.get('/bible/query', (req, res) => {
     pool.query(sql, (error, value) => {
         if(error){
             res.send(Response.error(500, error))
-            throw error;
+            // throw error;
         }
         if(value && value.length == 0){
             //没查到
@@ -35,11 +35,11 @@ router.post('/bible/queryFid',(req,res)=>{
     }
 
     //执行查询任务
-    let sql = "select * from disease where fid=?"
+    let sql = "select * from disease where sid=?"
     pool.query(sql,[id],(error,value)=> {
         if(error){
             res.send(Response.error(500, error))
-            throw error;
+            // throw error;
         }
         res.send(Response.ok(value));  
     })
