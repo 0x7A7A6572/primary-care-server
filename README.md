@@ -28,7 +28,8 @@
 ## 接口文档地址
 https://console-docs.apipost.cn/preview/81f4754cdd5a0c2d/6d3f156aaa7cdf6f
 
-
+### 接口调试中的token设置
+ 使用登陆接口登陆用户, 将返回的用户信息中token字段复制到 `认证`>`Bearer auth认证`中；或者在`全局参数`中设置；
 
 ## 工作划分
 

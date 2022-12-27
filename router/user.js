@@ -56,7 +56,7 @@ router.post("/user/register", async (req, resp) => {
         utils.getDate(), utils.getDate()]);
       // 插入健康数据
       await utils.query(add_healthy_sql, [uid, 0, 0, "-", "-", utils.getDate()]);
-      resp.send(Response.ok({}, '恭喜，注册成功！'));
+      resp.send(Response.ok(null, '恭喜，注册成功！'));
     } else {
       resp.send(Response.error(400, '该身份证/手机号已被注册！'));
     }
@@ -108,11 +108,12 @@ router.post("/user/update", async (req, resp) => {
   try {
     let dbres = await utils.query(sql, [{ avatar, address, update_time: utils.getDate() }, uid]);
     if (dbres.affectedRows != 1) return resp.send(Response.error( 400, "更新用户信息失败"));
-    resp.send(Response.ok({}, "更新用户信息成功"));
+    resp.send(Response.ok(null, "更新用户信息成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
-})
+});
+
 
 // 更新用户健康信息
 router.post("/user/update_health", async (req, resp) => {
@@ -134,7 +135,7 @@ router.post("/user/update_health", async (req, resp) => {
   try {
     let dbres = await utils.query(insHealthySql, [{ uid, height, weight, blood_ressure, blood_sugar, update_time: utils.getDateTime() }, uid]);
     if (dbres.affectedRows != 1) return resp.send(Response.error(400, "更新健康信息失败"));
-    resp.send(Response.ok({},"更新用户健康信息成功"));
+    resp.send(Response.ok(null,"更新用户健康信息成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
@@ -149,7 +150,7 @@ router.get("/user/medical_history", async (req, resp) => {
   let find_medhis_sql = `select * from medical_history where uid=?`;
   try {
     let dbres = await utils.query(find_medhis_sql, [uid]);
-    resp.send(Response.ok({ dbres }, "获取成功"));
+    resp.send(Response.ok( dbres , "获取成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
@@ -175,7 +176,7 @@ router.post("/user/add_medical_history", async (req, resp) => {
   values(?,?,?,?,?)`;
   try {
     await utils.query(add_medhis_sql, [null, uid, 0, descs, medical_time]);
-    resp.send(Response.ok({}, "添加成功"));
+    resp.send(Response.ok(null, "添加成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
@@ -207,7 +208,7 @@ router.post("/user/doctor_cer", async (req, resp) => {
   try {
     await utils.query(doctor_cer_sql, [uid, grade, good_at, avatar, gender, depa, did, hid]);
     await utils.query(update_user_sql, [uid]);
-    resp.send(Response.ok({}, "添加成功"));
+    resp.send(Response.ok(null, "添加成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }

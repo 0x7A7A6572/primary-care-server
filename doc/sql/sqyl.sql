@@ -111,7 +111,7 @@ create table order_yy(
   state tinyint default 0 comment "订单状态（0：待诊断/1：正在诊断/2：诊断完成/）",
   create_time datetime not null comment "订单创建时间",
   update_time datetime not null comment "订单更新时间",
-  hid int not null comment "医院id",
+  hid int not null comment "医院id"
 );
 
 -- 病史数据
