@@ -48,6 +48,9 @@ app.use(require("./router/reminder"));
 app.use(require("./router/news"));
 app.use(require('./router/bible.js'))
 app.use(require("./router/register"));
+app.use(require("./router/doctor"));
+
+
 /**
  * 接口， 处理/请求
  */
