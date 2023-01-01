@@ -114,6 +114,20 @@ router.post("/user/update", async (req, resp) => {
   }
 });
 
+// 获取用户健康信息
+router.get("/user/health", async (req, resp) => {
+  // 从tokenPayload中拿到uid
+  let uid = req.tokenPayload.uid || req.query.uid;
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
+  // 查询返回
+  let find_health_sql = `select * from health where uid=?`;
+  try {
+    let dbres = await utils.query(find_health_sql, [uid]);
+    resp.send(Response.ok( dbres , "获取成功"));
+  } catch (error) {
+    resp.send(Response.error(500, error));
+  }
+});
 
 // 更新用户健康信息
 router.post("/user/update_health", async (req, resp) => {
