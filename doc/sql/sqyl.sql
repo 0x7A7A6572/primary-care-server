@@ -15,7 +15,7 @@ create table if not exists hospital(
   title varchar(50) not null comment "医院名",
   logo varchar(200) not null comment "医院logo",
   grade varchar(50) not null comment "医院等级",
-  type varchar(200) comment "医院类型",
+  category varchar(200) comment "医院类型",
   -- telephone varchar(100) comment "预约挂号电话",
   address varchar(200) comment "医院地址" -- cityid int comment "医院所在城市id",
   -- province int comment "医院所在省份id"
@@ -40,12 +40,14 @@ create table doctor(
   id int auto_increment primary key,
   name varchar(50) not null comment "姓名",
   grade varchar(10) not null comment "等级（医师/护士..）",
-  good_at varchar(50) not null comment "擅长领域",
+  good_at varchar(500) not null comment "擅长领域",
   avatar varchar(200) comment "医生头像",
   gender boolean default 0 comment "医生性别",
   depa varchar(10) comment "科室名",
   did int default 0 comment "科室id",
-  hid int comment "绑定医院id"
+  hid int comment "绑定医院id",
+  service_count int comment "服务的人数",
+  score int comment "综合评分"
 );
 
 -- 药品信息
@@ -193,7 +195,9 @@ create table resident_doctor(
   gender boolean default 0 comment "医生性别(取用户信息)",
   depa varchar(10) comment "科室名",
   did int default 0 comment "科室id",
-  hid int comment "绑定医院id"
+  hid int comment "绑定医院id",
+  service_count int default 0 comment "服务的人数",
+  score int default 5 comment "综合评分"
 );
 
 -- -----------------------------------------------
