@@ -16,6 +16,8 @@ app.use(
   })
 );
 
+app.use(express.static('public'));
+
 // 解析post请求参数
 app.use(express.urlencoded());
 
