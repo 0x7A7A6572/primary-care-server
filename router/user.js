@@ -196,6 +196,27 @@ router.post("/user/add_medical_history", async (req, resp) => {
   }
 });
 
+// 删除病史数据
+router.post("/user/del_medical_history", async (req, resp) => {
+  let { mid } = req.body;
+  // 表单验证
+  let schema = Joi.object({
+   mid: Joi.number().required(),
+  });
+  let { error, value } = schema.validate(req.body);
+  if (error) return resp.send(Response.error(400, error));
+  // 从tokenPayload中拿到uid
+  let uid = req.tokenPayload.uid;
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
+  // 查询返回
+  let del_medhis_sql = `delete from medical_history where mid=? and uid=?`;
+  try {
+    await utils.query(del_medhis_sql, [mid, uid]);
+    resp.send(Response.ok(null, "删除成功"));
+  } catch (error) {
+    resp.send(Response.error(500, error));
+  }
+});
 // 医生入驻功能
 router.post("/user/doctor_cer", async (req, resp) => {
   let { grade, good_at, avatar, gender, depa, did, hid } = req.body;

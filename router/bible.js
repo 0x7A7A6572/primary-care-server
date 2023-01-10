@@ -7,7 +7,7 @@ const Response = require('../utils/Response.js');
 //医疗宝典疾病列表
 router.get('/bible/query', (req, res) => {
     //执行查询业务
-    let sql = "select * from subject";
+    let sql = "select * from subject group by sid desc";
     pool.query(sql, (error, value) => {
         if(error){
             res.send(Response.error(500, error))
