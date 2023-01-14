@@ -55,7 +55,7 @@ router.post('/register/list',async (req,res)=>{
         return; // 结束
       }
       try {
-        let sql = `SELECT o.yy_time,d.name,a.title,a.address,o.oid,d.id,a.hid
+        let sql = `SELECT o.*,d.name,a.title,a.address,a.hid
         FROM order_yy o join doctor d on o.did=d.did
         join hospital a 
         where o.uid=?
