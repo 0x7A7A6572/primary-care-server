@@ -217,13 +217,47 @@ router.post("/user/del_medical_history", async (req, resp) => {
     resp.send(Response.error(500, error));
   }
 });
-// 医生入驻功能
+// 医生入驻功能(弃用)
+// router.post("/user/doctor_cer", async (req, resp) => {
+//   let { grade, good_at, avatar, gender, depa, did, hid } = req.body;
+//   // 表单验证
+//   let schema = Joi.object({
+//     grade: Joi.required(),
+//     good_at: Joi.string().required(),
+//     avatar: Joi.string().required(),
+//     gender: Joi.string().required(),
+//     depa: Joi.string().required(),
+//     did: Joi.number().required(),
+//     hid: Joi.number().required()
+//   });
+//   let { error, value } = schema.validate(req.body);
+//   if (error) return resp.send(Response.error(400, error));
+//   // 从tokenPayload中拿到uid
+//   let uid = req.tokenPayload.uid;
+//   if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
+//   // 查询返回
+//   let doctor_cer_sql = `insert into resident_doctor   
+//   (uid,grade,good_at,avatar,gender,depa,did,hid) 
+//   values(?,?,?,?,?,?,?,?)`;
+//   let update_user_sql = `update user set isdoctor=1 where uid=?`;
+//   try {
+//     await utils.query(doctor_cer_sql, [uid, grade, good_at, avatar, gender, depa, did, hid]);
+//     await utils.query(update_user_sql, [uid]);
+//     resp.send(Response.ok(null, "添加成功"));
+//   } catch (error) {
+//     resp.send(Response.error(500, error));
+//   }
+// });
+// 医生入驻/添加医生功能
 router.post("/user/doctor_cer", async (req, resp) => {
-  let { grade, good_at, avatar, gender, depa, did, hid } = req.body;
+  let { name, grade, good_at, descs, avatar, gender, depa, did, hid } = req.body;
   // 表单验证
   let schema = Joi.object({
+    uid:Joi.any(),
+    name: Joi.string().required(),
     grade: Joi.required(),
     good_at: Joi.string().required(),
+    descs: Joi.string().required(),
     avatar: Joi.string().required(),
     gender: Joi.string().required(),
     depa: Joi.string().required(),
@@ -233,21 +267,44 @@ router.post("/user/doctor_cer", async (req, resp) => {
   let { error, value } = schema.validate(req.body);
   if (error) return resp.send(Response.error(400, error));
   // 从tokenPayload中拿到uid
-  let uid = req.tokenPayload.uid;
-  if (!uid) return resp.send(Response.error(400,  "uid not playload in token!" ));
+  let uid = req.tokenPayload.uid || req.body.uid;
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token! or req" ));
   // 查询返回
-  let doctor_cer_sql = `insert into resident_doctor   
-  (uid,grade,good_at,avatar,gender,depa,did,hid) 
-  values(?,?,?,?,?,?,?,?)`;
+  let isdoctor_sql = `select isdoctor from user where uid=?`;
+  let doctor_cer_sql = `insert into doctor   
+  (uid,name,grade,good_at,descs,avatar,gender,depa,did,hid) 
+  values(?,?,?,?,?,?,?,?,?,?)`;
   let update_user_sql = `update user set isdoctor=1 where uid=?`;
   try {
-    await utils.query(doctor_cer_sql, [uid, grade, good_at, avatar, gender, depa, did, hid]);
+   let resdb = await utils.query(isdoctor_sql, [uid]);
+   // 已经认证请勿重复认证
+   if(resdb[0]?.isdoctor == 1) return resp.send(Response.error(400, '已经认证请勿重复认证!'));
+    await utils.query(doctor_cer_sql, [uid, name, grade, good_at, descs, avatar, gender, depa, did, hid]);
     await utils.query(update_user_sql, [uid]);
-    resp.send(Response.ok(null, "添加成功"));
+    resp.send(Response.ok(null, "认证成功"));
   } catch (error) {
     resp.send(Response.error(500, error));
   }
 });
+
+// 获取认证的医生信息
+router.post("/user/cer_info", async (req, resp) => {
+  // 从tokenPayload中拿到uid
+  let uid = req.tokenPayload.uid || req.body.uid;
+  if (!uid) return resp.send(Response.error(400,  "uid not playload in token! or req" ));
+   // 查询返回
+   let cer_info_sql = `select o.*,d.title d_title,h.title h_title,h.address h_addr
+   from doctor o
+     join depa d on o.did=d.did
+     join hospital h on o.hid=h.hid
+   where o.uid=?;`;
+   try {
+    let dbres = await utils.query(cer_info_sql, [uid]);
+     resp.send(Response.ok(dbres, "获取成功"));
+   } catch (error) {
+     resp.send(Response.error(500, error));
+   }
+})
 
 // 过滤处理用户信息字段(密码不返回)
 function fllterUserData(u) {

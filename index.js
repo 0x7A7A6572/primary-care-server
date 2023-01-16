@@ -51,6 +51,8 @@ app.use(require("./router/news"));
 app.use(require('./router/bible.js'))
 app.use(require("./router/register"));
 app.use(require("./router/doctor"));
+app.use(require("./router/chat"));
+
 
 
 /**

@@ -3,24 +3,31 @@ const dotenv = require("dotenv");
 dotenv.config({ path: './.env' });
 const express = require('express');
 const jwt = require("jsonwebtoken");
-const cors = require('cors');
+const ChatUtils = require('./utils/ChatUtils');
 const socket = require('socket.io');
 const app = express();
 const http = require('http');
 const utils = require("./utils/utils");
 const port = process.env.CHAT_PORT;
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-app.use(express.static('public'));
-
+// 消息体对象
+const MsgRes = require("./utils/MsgRes");
+// app.use(express.static('public'));
+// app.use(cors({origin: "*",}));
 const server = http.createServer(app);
 
-const io = new socket.Server(server, {
+// const io = new socket.Server(server, {
+//   cors: { origin: '*' }
+// });
+const io = socket(server, {
   cors: { origin: '*' }
 });
-
 // 定义消息类型
 const MSG_TYPE = {
-  REGISTER: 'register', // 聊天接入预验证用户
+  ON_LINE: 'online', // 上线
+  OFF_LINE: 'offline', // 离线
+  VISIT_START: 'visit-start', // 问诊开始
+  VISIT_END: 'visit-end',     // 问诊结束
   USER: 'uchat', // 用户消息
   SYSTEM: 'schat' // 系统消息
 }
@@ -35,15 +42,12 @@ const chatUsers = new Map();
 
 // 监听 sockte 
 io.on('connection', user => {
-  user.emit(MSG_TYPE.SYSTEM, { msg: '连接成功服务器，请发送注册信息验证！' });
-  // 聊天初始化验证
-  user.on(MSG_TYPE.REGISTER, Msg => {
-    let { uid, token, touid } = Msg;
-    verifyToken(uid, token).then(res => {
+  // 上线连接 
+  user.on(MSG_TYPE.ON_LINE, Msg => {
+    let { uid, token } = Msg;
+    verifyToken(uid, token).then(async res => {
       user.uid = uid; // 发送者
       user.token = token;
-      user.touid = touid;
-      user.recipient = touid; // 接收者
 
       if (chatUsers.has(uid)) {
         chatUsers.get(uid).status = USER_STATUS.ON_LINE;
@@ -53,8 +57,6 @@ io.on('connection', user => {
           status: USER_STATUS.ON_LINE
         });
       }
-      user.emit(MSG_TYPE.SYSTEM, { msg: '注册信息验证成功！' });
-
       // 检查是否有未接收的消息
       if (!unSendMsgs.has(uid)) return;
       unSendMsgs.get(uid).forEach(m => {
@@ -64,38 +66,69 @@ io.on('connection', user => {
       // console.log("chatUsers:", chatUsers);
     }).catch(err => {
       // console.log("err:", err);
-      user.emit(MSG_TYPE.SYSTEM, { msg: '注册信息验证错误', err });
+      user.emit(...MsgRes.system('认证信息验证错误'));
     });
   });
+  
+  // 下线通知
+  user.on(MSG_TYPE.OFF_LINE, Msg=>{
+    user.disconnect();
+  })
 
+  // 问诊开始
+  user.on(MSG_TYPE.VISIT_START, async Msg => {
+    let { uid, touid, descs, type } = Msg;
+    // 会话创建
+    let sid = await ChatUtils.createInquiries(uid, touid, type, descs, utils.getDateTime());
+    // console.log("cres: ", sid);
+    // 如果返回fasle 则提示会话创建失败
+    if (sid == false) return user.emit(...MsgRes.system('问诊发起失败'));
+    // 否则返回会话id（数据库）
+    user.emit(...MsgRes.visitStart('问诊会话开始', 0x7A7A6572, sid));
+  });
+  // 问诊结束
+  user.on(MSG_TYPE.VISIT_END, Msg => {
+    ChatUtils.closeInquiries(Msg.sid);
+    console.log(Msg.msg,Msg.endid);
+  });
   // 用户私聊通道 
   user.on(MSG_TYPE.USER, Msg => {
-    let { uid, token, touid, msg } = Msg;
-    // console.log('用户发送的消息体', Msg, user.id);
+    let { uid, token, touid, msg, sid, type, time } = Msg;
+    // console.log('用户发送的消息体', Msg);
     verifyToken(uid, token).then(() => {
       // user.emit(MSG_TYPE.SYSTEM, { msg: `chatUsers.has(touid):${chatUsers.has(touid)}` });
 
       if (chatUsers.has(touid) && chatUsers.get(touid).status == USER_STATUS.ON_LINE) {
-        user.to(chatUsers.get(uid).suid).emit(MSG_TYPE.SYSTEM, { msg: '对方在线状态' });
-        user.to(chatUsers.get(touid).suid).emit(MSG_TYPE.USER, { msg, sendTime: utils.getDateTime() });
+        // user.to(chatUsers.get(uid).suid).emit(MSG_TYPE.SYSTEM, { msg: '对方在线状态' });
+        user.to(chatUsers.get(touid).suid).emit(...MsgRes.user(msg));
       } else {
-       
-        addUnSendMsgs(touid, { msg, sendTime: utils.getDateTime(), sender: uid })
-        user.emit(MSG_TYPE.SYSTEM, { msg: '对方当前不在线，消息已保存' });
-        console.log("对方当前不在线,消息存入unSendMsgs列表");
+        addUnSendMsgs(touid, { ...MsgRes.base(msg, 'others'), sender: uid })
+        user.emit(...MsgRes.system('对方当前不在线，消息已保存'));
+        // console.log("对方当前不在线,消息存入unSendMsgs列表");
       }
+      // 存入数据库
+      ChatUtils.pushMsg({
+        sid,
+        content: msg,
+        type,sendtime: time,
+        sender: uid,
+        recipient: touid,
+        state: 1 // TODO 已读未读暂不控制
+      });
     }).catch(err => {
       console.log("err:", err);
-      user.emit(MSG_TYPE.SYSTEM, { msg: '发送消息错误', err });
+      user.emit(...MsgRes.system('发送消息错误'));
     });
 
   });
 
-  // 用户断开连接
+
+  // 断开连接监听
   user.on('disconnect', reason => {
-    // console.log('disconnect: ', reason);
+    console.log('disconnect: ', reason);
     if (chatUsers.has(user.uid)) {
       chatUsers.get(user.uid).status = USER_STATUS.OFF_LINE;
+      chatUsers.delete(user.uid);
     }
   });
 
