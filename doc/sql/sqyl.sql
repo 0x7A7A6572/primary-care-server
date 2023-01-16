@@ -38,17 +38,34 @@ drop table if exists doctor;
 
 create table doctor(
   id int auto_increment primary key,
+  uid varchar(18) comment "入驻信息绑定的用户",
   name varchar(50) not null comment "姓名",
   grade varchar(10) not null comment "等级（医师/护士..）",
   good_at varchar(500) not null comment "擅长领域",
+  descs varchar(200) comment "自我简介",
   avatar varchar(200) comment "医生头像",
   gender boolean default 0 comment "医生性别",
   depa varchar(10) comment "科室名",
   did int default 0 comment "科室id",
   hid int comment "绑定医院id",
-  service_count int comment "服务的人数",
-  score int comment "综合评分"
+  service_count int default 0 comment "服务的人数",
+  score int default 5 comment "综合评分"
 );
+
+-- -- 入驻医生信息 （此结构需与医生模块保持一致 目前挂号和问诊使用同一个数据，但注意id和uid）
+-- drop table if exists resident_doctor;
+-- create table resident_doctor(
+--   uid varchar(18) primary key comment "入驻信息绑定的用户",
+--   grade varchar(10) not null comment "等级（医师/护士..）",
+--   good_at varchar(50) not null comment "擅长领域",
+--   avatar varchar(200) comment "医生头像(取用户信息)",
+--   gender boolean default 0 comment "医生性别(取用户信息)",
+--   depa varchar(10) comment "科室名",
+--   did int default 0 comment "科室id",
+--   hid int comment "绑定医院id",
+--   service_count int default 0 comment "服务的人数",
+--   score int default 5 comment "综合评分"
+-- );
 
 -- 药品信息
 drop table if exists drugs;
@@ -60,7 +77,7 @@ create table drugs(
   type varchar(10) comment "剂型",
   spec varchar(50) comment "规格",
   pro_unit varchar(20) comment "生产单位",
-  code varchar(15) comment "药品编码"
+  code decimal(15,0) comment "药品编码"
 );
 
 -- 用户信息
@@ -185,20 +202,6 @@ create table news(
 
 -- 社区活动数据
 
--- 入驻医生信息
-drop table if exists resident_doctor;
-create table resident_doctor(
-  uid varchar(18) primary key comment "入驻信息绑定的用户",
-  grade varchar(10) not null comment "等级（医师/护士..）",
-  good_at varchar(50) not null comment "擅长领域",
-  avatar varchar(200) comment "医生头像(取用户信息)",
-  gender boolean default 0 comment "医生性别(取用户信息)",
-  depa varchar(10) comment "科室名",
-  did int default 0 comment "科室id",
-  hid int comment "绑定医院id",
-  service_count int default 0 comment "服务的人数",
-  score int default 5 comment "综合评分"
-);
 
 -- -----------------------------------------------
 -- 社区药房模块（好像有点多 做不做待定）
@@ -214,4 +217,29 @@ create table addrlist(
   name varchar(10) comment "收货人",
   phone varchar(11) comment "手机号",
   address varchar(50) not null comment "地址详细信息"
+);
+
+-- 问诊消息模块
+drop table if exists inquiries_msg;
+create table inquiries_msg(
+  sid int auto_increment primary key,
+  uid varchar(18) not null comment '问诊人id',
+  did varchar(18) not null comment '接诊人id',
+  type int default 0 comment '会话类型(图文/电话/视频)',
+  descs varchar(200) comment '症状描述',
+  state int default 0 comment '会话状态(0正在进行/1已结束)',
+  stime datetime not null comment '会话开始时间',
+  etime datetime DEFAULT NULL comment '会话结束时间'
+);
+
+drop table if exists msg;
+create table msg(
+  mid int auto_increment primary key,
+  sid int not null comment '会话id',
+  content varchar(200) not null comment '消息内容',
+  type varchar(10) default 'text' comment '消息类型(文字/图片/语音/...)',
+  sendtime VARCHAR(13) not null comment '消息发送时间',
+  sender varchar(18) not null comment '消息发送者',
+  recipient varchar(18) not null comment '消息接收者',
+  state int default 0 comment '消息状态(未读/已读)'
 );
