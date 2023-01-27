@@ -24,8 +24,17 @@ class MsgRes {
       role: "system"
     }]
   }
-  static user(msg ,type = 'text'){
+  static visitEnd(msg,touid,sid){
+    return [this.MSG_TYPE.VISIT_END, {
+      msg, 
+      type: 'text', touid, sid,
+      time: new Date().getTime(),
+      role: "system"
+    }]
+  }
+  static user(msg ,type = 'text',sid){
     return [this.MSG_TYPE.USER, {
+      sid,
       msg, type,
       time: new Date().getTime(),
       role: "others"

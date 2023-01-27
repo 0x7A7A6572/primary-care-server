@@ -28,6 +28,7 @@ const MSG_TYPE = {
   OFF_LINE: 'offline', // 离线
   VISIT_START: 'visit-start', // 问诊开始
   VISIT_END: 'visit-end',     // 问诊结束
+  // NEW_MSG_NOTIFY: 'new-msg',
   USER: 'uchat', // 用户消息
   SYSTEM: 'schat' // 系统消息
 }
@@ -89,7 +90,8 @@ io.on('connection', user => {
   // 问诊结束
   user.on(MSG_TYPE.VISIT_END, Msg => {
     ChatUtils.closeInquiries(Msg.sid);
-    console.log(Msg.msg,Msg.endid);
+    // console.log(Msg.msg,Msg.endid);
+    user.to(chatUsers.get( Msg.touid).suid).emit(...MsgRes.visitEnd('问诊会话结束', Msg.touid, Msg.sid));
   });
   // 用户私聊通道 
   user.on(MSG_TYPE.USER, Msg => {
@@ -100,7 +102,7 @@ io.on('connection', user => {
 
       if (chatUsers.has(touid) && chatUsers.get(touid).status == USER_STATUS.ON_LINE) {
         // user.to(chatUsers.get(uid).suid).emit(MSG_TYPE.SYSTEM, { msg: '对方在线状态' });
-        user.to(chatUsers.get(touid).suid).emit(...MsgRes.user(msg));
+        user.to(chatUsers.get(touid).suid).emit(...MsgRes.user(msg,type,sid));
       } else {
         addUnSendMsgs(touid, { ...MsgRes.base(msg, 'others'), sender: uid })
         user.emit(...MsgRes.system('对方当前不在线，消息已保存'));

@@ -27,7 +27,7 @@ class ChatUtils {
  }
  // 结束会话
  static async closeInquiries(sid){
-  console.log('closeInquiries：',sid)
+  // console.log('closeInquiries：',sid)
   let sql = `update inquiries_msg   
    set state=1,etime=? where sid=?`;
    try{
@@ -45,9 +45,9 @@ class ChatUtils {
   let sql = `insert into msg(sid,content,type,sendtime,sender,recipient,state)
    values(?,?,?,?,?,?,?);`;
    try{
-    console.log("pushMsg:",[sid,content,type,sendtime,sender,recipient,state]);
+    // console.log("pushMsg:",[sid,content,type,sendtime,sender,recipient,state]);
     let dbres = await utils.query(sql, [sid,content,type,sendtime,sender,recipient,state]);
-    console.log(dbres);
+    // console.log(dbres);
     return true;
    }catch(err){
     console.log(err);
