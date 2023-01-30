@@ -11,7 +11,7 @@ router.post('/chat/list', async (req, resp) => {
   let uid = req.tokenPayload.uid || req.body.uid;;
   if (!uid) return resp.send(Response.error(400, "uid not playload in token or req!"));
   //执行查询任务
-  let sql = `select m.*,d.avatar d_avatar,d.name d_name,d.grade d_grade, u.name u_name, u.avatar u_avatar from inquiries_msg m 
+  let sql = `select m.*,d.avatar d_avatar,d.name d_name,d.grade d_grade, u.name u_name, u.avatar u_avatar, u.birthday u_birthday, u.gender u_gender from inquiries_msg m 
   join doctor d on m.did=d.uid
   join user u on m.uid=u.uid
   where m.uid=? or m.did=?
