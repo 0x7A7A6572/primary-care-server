@@ -8,6 +8,8 @@ const socket = require('socket.io');
 const app = express();
 const http = require('http');
 const utils = require("./utils/utils");
+const fs = require("fs");
+const https = require("https");
 const port = process.env.CHAT_PORT;
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 // 消息体对象
@@ -169,4 +171,15 @@ server.listen(port, function () {
   console.log("[", port, "]聊天服务器已启动...");
 });
 
+// 配置https
+if(process.env.HTTPS_KEY && process.env.HTTPS_CRT){
+  const httpsOption = {
+    key: fs.readFileSync(process.env.HTTPS_KEY),
+    cert: fs.readFileSync(process.env.HTTPS_CRT)
+  }
+  const httpsServer = https.createServer(httpsOption, app);
+  httpsServer.listen(process.env.PORT, function () {
+    console.log("https in ...");
+  });
+}
 

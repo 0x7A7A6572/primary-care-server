@@ -5,6 +5,8 @@ const express = require('express');
 const app = express();
 const port = process.env.UPLOAD_PORT;
 const Response = require('./utils/Response.js');
+const fs = require("fs");
+const https = require("https");
 const BASE  = `http://localhost:${port}/`;
 // const BASE  = `http://部署的地址:${port}/`  // TODO发布时改成部署地址
 
@@ -47,3 +49,15 @@ app.listen(port, ()=>{
     console.log("[",port,"]上传文件服务已启动...");
 });
 
+// 配置https
+if(process.env.HTTPS_KEY && process.env.HTTPS_CRT){
+    const httpsOption = {
+      key: fs.readFileSync(process.env.HTTPS_KEY),
+      cert: fs.readFileSync(process.env.HTTPS_CRT)
+    }
+    const server = https.createServer(httpsOption, app);
+    server.listen(process.env.PORT, function () {
+      console.log("https in ...");
+    });
+  }
+  

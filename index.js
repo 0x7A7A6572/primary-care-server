@@ -7,6 +7,8 @@ const port = process.env.INDEX_PORT; // 服务端口
 const jwt = require("jsonwebtoken");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const Response = require("./utils/Response.js");
+const fs = require("fs");
+const https = require("https");
 // 配置跨域
 const cors = require("cors");
 const utils = require("./utils/utils.js");
