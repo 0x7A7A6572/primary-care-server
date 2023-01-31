@@ -65,3 +65,15 @@ app.get("/", (req, resp) => {
 app.listen(port, () => {
   console.log("[", port, "]社区医疗后端服务已启动...");
 });
+
+// 配置https
+if(process.env.HTTPS_KEY && process.env.HTTPS_CRT){
+  const httpsOption = {
+    key: fs.readFileSync(process.env.HTTPS_KEY),
+    cert: fs.readFileSync(process.env.HTTPS_CRT)
+  }
+  const server = https.createServer(httpsOption, app);
+  server.listen(process.env.PORT, function () {
+    console.log("https in ...");
+  });
+}
