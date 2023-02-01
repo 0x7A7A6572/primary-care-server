@@ -7,8 +7,8 @@ const port = process.env.INDEX_PORT; // 服务端口
 const jwt = require("jsonwebtoken");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const Response = require("./utils/Response.js");
-const fs = require("fs");
-const https = require("https");
+// const fs = require("fs");
+// const https = require("https");
 // 配置跨域
 const cors = require("cors");
 const utils = require("./utils/utils.js");
@@ -69,13 +69,13 @@ app.listen(port, () => {
 });
 
 // 配置https
-if(process.env.HTTPS_KEY && process.env.HTTPS_CRT){
-  const httpsOption = {
-    key: fs.readFileSync(process.env.HTTPS_KEY),
-    cert: fs.readFileSync(process.env.HTTPS_CRT)
-  }
-  const server = https.createServer(httpsOption, app);
-  server.listen(process.env.PORT, function () {
-    console.log("https in ...");
-  });
-}
+// if(process.env.HTTPS_KEY && process.env.HTTPS_CRT){
+//   const httpsOption = {
+//     key: fs.readFileSync(process.env.HTTPS_KEY),
+//     cert: fs.readFileSync(process.env.HTTPS_CRT)
+//   }
+//   const server = https.createServer(httpsOption, app);
+//   server.listen(port, function () {
+//     console.log("[", port, "]社区医疗后端服务已启动...");
+//   });
+// }
