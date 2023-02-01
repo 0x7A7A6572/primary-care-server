@@ -90,7 +90,7 @@ router.get('/doctor/recommend', async (req, res) => {
     from doctor o
       join depa d on o.did=d.did
       join hospital h on o.hid=h.hid
-    where o.grade = '主任医师' group by name limit 10`;
+    where o.grade = '主任医师' group by id desc limit 10`;
     let result = await pool.querySync(sql, []);
     res.send(Response.ok(result));
   } catch (error) {

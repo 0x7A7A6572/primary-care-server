@@ -7,17 +7,20 @@
 const utils = require("./utils.js");
 
 class ChatUtils {
-  // 创建会话
+  // 创建会话  this did is doctor id , not depa id!
  static async createInquiries(uid,did,type,descs,stime){
   let check_sql = `select * from inquiries_msg where uid=? and did=? and state=0;`;
   let sql = `insert into inquiries_msg   
    (uid,did,type,descs,stime) 
    values(?,?,?,?,?)`;
+  let add_server_count = `update doctor set service_count=service_count+1 where uid = ?;`
    try{
     let checkres = await utils.query(check_sql, [uid,did]);
     if(checkres.length > 0) return checkres[0].sid;
     let dbres = await utils.query(sql, [uid,did,type,descs,stime]);
     // console.log(dbres)
+    // 更新接人数
+    await utils.query(add_server_count, [did]);
     // 返回插入的sid 
     return dbres.insertId;
    }catch(err){

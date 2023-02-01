@@ -36,7 +36,11 @@ router.post('/news/detail', async (req, resp) => {
   if (error) return resp.send(Response.error(400, error));
   try {
     let sql = "select * from news where nid=?";
+    // 更新浏览量
+    let add_view_count = `update news set hot=hot+1 where nid = ?;`
+
     let dbres = await pool.querySync(sql, [nid]);
+                await pool.querySync(add_view_count, [nid]);
     resp.send(Response.ok({ ...dbres[0] }, "获取成功"));
   } catch (error) {
     resp.send(Response.error(error));
