@@ -75,7 +75,10 @@ io.on('connection', user => {
   
   // 下线通知
   user.on(MSG_TYPE.OFF_LINE, Msg=>{
-    user.disconnect();
+    if (chatUsers.has(Msg.uid)) {
+      chatUsers.get(Msg.uid).status = USER_STATUS.OFF_LINE;
+    }
+    // user.disconnect();
   })
 
   // 问诊开始
@@ -93,7 +96,9 @@ io.on('connection', user => {
   user.on(MSG_TYPE.VISIT_END, Msg => {
     ChatUtils.closeInquiries(Msg.sid);
     // console.log(Msg.msg,Msg.endid);
-    user.to(chatUsers.get( Msg.touid).suid).emit(...MsgRes.visitEnd('问诊会话结束', Msg.touid, Msg.sid));
+    if(chatUsers.has(Msg.touid)){
+      user.to(chatUsers.get(Msg.touid).suid).emit(...MsgRes.visitEnd('问诊会话结束', Msg.touid, Msg.sid));
+    }
   });
   // 用户私聊通道 
   user.on(MSG_TYPE.USER, Msg => {
